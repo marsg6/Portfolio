@@ -1,32 +1,35 @@
-# Prerequisites
-*.d
+#####################
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+#Unreal Generated Files#
 
-# Precompiled Headers
-*.gch
-*.pch
+####################
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+#*/Build
 
-# Fortran module files
-*.mod
-*.smod
+Binaries/
 
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+DerivedDataCache/
 
-# Executables
-*.exe
-*.out
-*.app
+Intermediate/
+
+Saved/
+
+############
+
+#Asset Files#
+
+###########
+
+*/Content/AssetFolderName1
+
+*/Content/AssetFolderName2
+
+*/Content/AssetFolderName3
+
+##################
+
+#VS Generated Files#
+
+#################
+.vs/
+*.sln
