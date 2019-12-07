@@ -2,9 +2,20 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "ObstacleBase.h"
 #include "GridBase.generated.h"
+
+USTRUCT(BlueprintType)
+struct FTileData {
+	GENERATED_BODY()
+
+	FTileData() = default;
+	FTileData(EGroundType Type, FVector Pos, FVector2D Coord) : GroundType(Type), TilePos(Pos), GridCoord(Coord) {}
+
+	EGroundType GroundType;
+	FVector TilePos;
+	FVector2D GridCoord;
+};
 
 UCLASS()
 class ALGOVISUALIZATION_API AGridBase : public AActor {
@@ -15,6 +26,8 @@ class ALGOVISUALIZATION_API AGridBase : public AActor {
 public:	
 	AGridBase();
 
+	FORCEINLINE TMap<FVector2D, FTileData> GetTileInfos() { return TileInfos; }
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -23,6 +36,14 @@ private:
 	FVector GetGridBottomLeft() const;
 	UFUNCTION(BlueprintCallable, Category = Grid, Meta = (AllowPrivateAccess = true))
 	void GetGridTileNumber(int32& OutTileNumX, int32& OutTileNumY);
+	UFUNCTION(BlueprintCallable, Category = Grid, Meta = (AllowPrivateAccess = true))
+	void GenerateMapData();
+	UFUNCTION(BlueprintCallable, Category = Grid, Meta = (AllowPrivateAccess = true))
+	void SpawnTiles(bool bSpawnNoneTile);
+	
+	/* Debug Funtion */
+	UFUNCTION(BlueprintCallable, Category = Grid, Meta = (AllowPrivateAccess = true))
+	void DrawPlane(FVector Pos, EGroundType Type);
 	UFUNCTION(BlueprintCallable, Category = Grid, Meta = (AllowPrivateAccess = true))
 	void DrawTiles();
 
@@ -35,9 +56,11 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Grid, Meta = (AllowPrivateAccess = true))
 	FVector2D GridSize;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Grid, Meta = (AllowPrivateAccess = true))
-	FLinearColor GridBoxColor;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Grid, Meta = (AllowPrivateAccess = true))
 	float TileSize;
+	float TileSizeMinus;
 	int32 TileNumX;
 	int32 TileNumY;
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Grid, Meta = (AllowPrivateAccess = true))
+	TMap<FVector2D, FTileData> TileInfos;
 };

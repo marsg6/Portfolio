@@ -5,7 +5,7 @@
 #include "ObstacleBase.generated.h"
 
 UENUM(BlueprintType)
-enum class EObstacleType : uint8 {
+enum class EGroundType : uint8 {
 	Normal,
 	Difficult,
 	ReallyDifficult,
@@ -20,6 +20,8 @@ class ALGOVISUALIZATION_API AObstacleBase : public AActor {
 public:	
 	AObstacleBase();
 
+	FORCEINLINE EGroundType GetObstacleType() const { return ObstacleType; }
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -28,5 +30,5 @@ private:
 	UStaticMeshComponent* MeshComp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Obstacle, Meta = (AllowPrivateAccess = true))
-	EObstacleType ObstacleType;
+	EGroundType ObstacleType;
 };
