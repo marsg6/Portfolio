@@ -11,18 +11,27 @@ class ALGOVISUALIZATION_API ATileBase : public AActor {
 public:	
 	ATileBase();
 
+	void EndOverTile();
+	void DeselectTile();
+
 protected:
 	virtual void BeginPlay() override;
 
 private:
-	UFUNCTION()
+	void CustomInit();
 	void SetTileColor();
-	struct FTileData* GetTileData();
+	void SetTileSize();
+	auto GetTileData();
 
 	UFUNCTION()
 	void MeshBeginCursorOver(UPrimitiveComponent* TouchedComponent);
 	UFUNCTION()
 	void MeshEndCursorOver(UPrimitiveComponent* TouchedComponent);
+	UFUNCTION()
+	void MeshClicked(UPrimitiveComponent* TouchedComponent, FKey ButtonPressed);
+
+	void BeginOverTile();
+	void SelectTile();
 
 public:
 	FVector2D GridCoord;
@@ -31,7 +40,11 @@ public:
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tile, Meta = (AllowPrivateAccess = true))
-	UStaticMeshComponent* MeshComp;
+	class UStaticMeshComponent* MeshComp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI, Meta = (AllowPrivateAccess = true))
+	class UWidgetComponent* WidgetComp;
 
+	FTimerHandle InitTimer;
+	bool bIsOvered;
 	bool bIsSelected;
 };

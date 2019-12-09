@@ -26,7 +26,11 @@ class ALGOVISUALIZATION_API AGridBase : public AActor {
 public:	
 	AGridBase();
 
-	FORCEINLINE TMap<FVector2D, FTileData> GetTileInfos() { return TileInfos; }
+	FORCEINLINE TMap<FVector2D, FTileData> GetTileInfos() const { return TileInfos; }
+	FORCEINLINE float GetTileSize() const { return TileSize; }
+
+	void NewTileSelected(class ATileBase* Tile);
+	void NewTileOvered(class ATileBase* Tile);
 
 protected:
 	virtual void BeginPlay() override;
@@ -60,7 +64,11 @@ private:
 	float TileSizeMinus;
 	int32 TileNumX;
 	int32 TileNumY;
-public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Grid, Meta = (AllowPrivateAccess = true))
 	TMap<FVector2D, FTileData> TileInfos;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tile, Meta = (AllowPrivateAccess = true))
+	class ATileBase* SelectedTile;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Tile, Meta = (AllowPrivateAccess = true))
+	class ATileBase* OveredTile;
 };

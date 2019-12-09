@@ -3,4 +3,5 @@
 AInteractPlayerController::AInteractPlayerController() {
 	bShowMouseCursor = true;
 	bEnableMouseOverEvents = true;
+	bEnableClickEvents = true;
 }

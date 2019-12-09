@@ -103,6 +103,20 @@ void AGridBase::SpawnTiles(bool bSpawnNoneTile) {
 	}
 }
 
+void AGridBase::NewTileSelected(ATileBase* Tile) {
+	if (SelectedTile) {
+		SelectedTile->DeselectTile();
+	}
+	SelectedTile = Tile;
+}
+
+void AGridBase::NewTileOvered(ATileBase* Tile) {
+	if (OveredTile) {
+		OveredTile->EndOverTile();
+	}
+	OveredTile = Tile;
+}
+
 /* Debug Function */
 
 void AGridBase::DrawPlane(FVector Pos, EGroundType Type) {
