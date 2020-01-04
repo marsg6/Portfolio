@@ -100,6 +100,7 @@ void ASorter::Sort() {
 		case ESortType::RadixSort: {
 			TArray<FWrappedArray> Buckets;
 			Buckets.AddDefaulted(10);
+			MovedObjsToSort = ObjsToSort;
 			SortMode == ESortMode::Once ? RadixSort() : RadixSortOneByOne(Buckets, 1, 0, 0, 0);
 			break;
 		}
@@ -235,11 +236,11 @@ void ASorter::RadixSortOneByOne(TArray<FWrappedArray>& Buckets, int32 I, int32 J
 				Max = Max < ObjNum ? Max : ObjNum - 1;
 
 				for (int32 M = J; M <= Max; ++M) {
-					int32 ID = ObjsToSort[M]->GetID() / static_cast<int32>(pow(10, I - 1));
+					int32 ID = MovedObjsToSort[M]->GetID() / static_cast<int32>(pow(10, I - 1));
 					int32 ComparedDigit = ID % 10;
 					++ArrAccess;
-					ObjsToSort[M]->SetActorHiddenInGame(true);
-					Buckets[ComparedDigit].Bucket.Push(ObjsToSort[M]);
+					MovedObjsToSort[M]->SetActorHiddenInGame(true);
+					Buckets[ComparedDigit].Bucket.Push(MovedObjsToSort[M]);
 				}
 				GetWorldTimerManager().SetTimerForNextTick(FTimerDelegate::CreateUFunction(this, FName(TEXT("RadixSortOneByOne")), Buckets, I, Max + 1, 0, 0));
 			}
@@ -247,6 +248,7 @@ void ASorter::RadixSortOneByOne(TArray<FWrappedArray>& Buckets, int32 I, int32 J
 				static int32 Count;
 				if (K == 0 && L == 0) {
 					Count = 0;
+					MovedObjsToSort.Empty();
 				}
 				if (K < 10) {
 					auto& Bucket = Buckets[K].Bucket;
@@ -256,6 +258,7 @@ void ASorter::RadixSortOneByOne(TArray<FWrappedArray>& Buckets, int32 I, int32 J
 						float Alpha = static_cast<float>(Count++) / ObjNum;
 						Item->SetActorRotation(FRotator(0.0f, 0.0f, Alpha * 360.0f));
 						Item->SetActorHiddenInGame(false);
+						MovedObjsToSort.Add(Item);
 						GetWorldTimerManager().SetTimerForNextTick(FTimerDelegate::CreateUFunction(this, FName(TEXT("RadixSortOneByOne")), Buckets, I, J, K, L + 1));
 					}
 					else {

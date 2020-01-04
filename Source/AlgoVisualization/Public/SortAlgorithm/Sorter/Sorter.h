@@ -4,6 +4,10 @@
 #include "GameFramework/Actor.h"
 #include "Sorter.generated.h"
 
+//This project is inspired by the YouTube Videos by "Timo Bingmann" and "w0rthy"
+//https://www.youtube.com/watch?v=kPRA0W1kECg
+//https://www.youtube.com/watch?v=y9Ecb43qw98
+
 USTRUCT()
 struct FWrappedArray {
 	GENERATED_BODY()
@@ -35,11 +39,11 @@ class ALGOVISUALIZATION_API ASorter : public AActor {
 public:
 	ASorter();
 
-	UFUNCTION(BlueprintCallable, Category = "Sort|Spawner", Meta = (AllowPrivateAccess = true))
+	UFUNCTION(BlueprintCallable, Category = "Sort|Spawner")
 	void Randomize();
-	UFUNCTION(BlueprintCallable, Category = "Sort|Spawner", Meta = (AllowPrivateAccess = true))
+	UFUNCTION(BlueprintCallable, Category = "Sort|Spawner")
 	void Sort();
-	UFUNCTION(BlueprintCallable, Category = "Sort|Spawner", Meta = (AllowPrivateAccess = true))
+	UFUNCTION(BlueprintCallable, Category = "Sort|Spawner")
 	void Stop();
 
 	FORCEINLINE void SetSortType(ESortType NewSortType) { SortType = NewSortType; }

@@ -37,7 +37,10 @@ FText UTileWidget::SetTileCost() {
 	if (Grid) {
 		auto TileData = Grid->GetTileInfos().Find(GridCoord);
 		if (TileData) {
-			return FText::FromString(FString::FromInt(TileData->TileCost));
+			int32 TileCost = TileData->TileCost;
+			if (TileCost != 999) {
+				return FText::FromString(FString::FromInt(TileCost));
+			}
 		}
 	}
 	return FText();

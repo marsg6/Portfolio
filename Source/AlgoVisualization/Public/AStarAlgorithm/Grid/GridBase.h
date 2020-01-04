@@ -1,9 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "ObstacleBase.h"
 #include "GridBase.generated.h"
+
+//This project is based on the YouTube Video series by "Alex Quevillon"
+//https://www.youtube.com/watch?v=bk9TtrHxeSo&list=PLHJDrb2QPWtbTZdxhMc8-C4OgN3LMWnD7
 
 USTRUCT(BlueprintType)
 struct FTileData {
