@@ -24,7 +24,7 @@ ATileBase::ATileBase() {
 	RootComponent = MeshComp;
 
 	WidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("Widget"));
-	static ConstructorHelpers::FClassFinder<UTileWidget> WidgetFinder(TEXT("WidgetBlueprint'/Game/Blueprints/Grid/Tile/Widget/TileWidget_BP.TileWidget_BP_C'"));
+	static ConstructorHelpers::FClassFinder<UTileWidget> WidgetFinder(TEXT("WidgetBlueprint'/Game/Blueprints/Grid/Widget/TileWidget_BP.TileWidget_BP_C'"));
 	if (WidgetFinder.Succeeded()) {
 		WidgetComp->SetWidgetClass(WidgetFinder.Class);
 		WidgetComp->SetWidgetSpace(EWidgetSpace::Screen);

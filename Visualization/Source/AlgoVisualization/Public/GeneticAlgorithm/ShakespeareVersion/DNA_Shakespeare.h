@@ -9,4 +9,6 @@ struct FDNA_Shakespeare {
 
 	UPROPERTY()
 	FString Chars;
+	UPROPERTY()
+	int32 Fitness;
 };
