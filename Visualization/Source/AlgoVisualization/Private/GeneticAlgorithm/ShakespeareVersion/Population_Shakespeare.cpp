@@ -12,12 +12,12 @@ APopulation_Shakespeare::APopulation_Shakespeare() {
 	DefaultComp = CreateDefaultSubobject<USceneComponent>(TEXT("DefaultComp"));
 	RootComponent = DefaultComp;
 
-	DNAPool = TEXT("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,");
-	OptimalSentence = TEXT("To be or not to be.");
-	SentenceLen = OptimalSentence.Len();
+	DNAPool = TEXT("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ., ");
+	TargetPhrase = TEXT("To be or not to be.");
+	PhraseLen = TargetPhrase.Len();
 	
 	TotalPopulation = 200;
-	TotalGeneration = 1;
+	TotalGeneration = 0;
 	MutationRate = 0.01f;
 
 	TotalFitnesses = 0;
@@ -36,16 +36,14 @@ void APopulation_Shakespeare::BeginPlay() {
 		ShakespeareWidget->AddToViewport();
 		ShakespeareWidget->InitWidget(this);
 	}
-
-	DNAs.AddDefaulted(TotalPopulation);
-	RandomizeDNAs();
-	CreateNewGeneration();
 }
 
 void APopulation_Shakespeare::RandomizeDNAs() {
+	TotalGeneration = 1;
+
 	for (auto& DNA : DNAs) {
-		DNA.Chars = OptimalSentence;
-		for (int i = 0; i < SentenceLen; ++i) {
+		DNA.Chars = TargetPhrase;
+		for (int i = 0; i < PhraseLen; ++i) {
 			DNA.Chars[i] = DNAPool[(UKismetMathLibrary::RandomInteger(DNAPool.Len()))];
 		}
 		DNA.Fitness = CalcFitness(DNA.Chars);
@@ -55,8 +53,8 @@ void APopulation_Shakespeare::RandomizeDNAs() {
 
 int32 APopulation_Shakespeare::CalcFitness(FString DNA) {
 	int32 Count = 0;
-	for (int32 i = 0; i < SentenceLen; ++i) {
-		if (DNA[i] == OptimalSentence[i]) {
+	for (int32 i = 0; i < PhraseLen; ++i) {
+		if (DNA[i] == TargetPhrase[i]) {
 			++Count;
 		}
 	}
@@ -68,7 +66,7 @@ FString APopulation_Shakespeare::PickByFitness() {
 		int32 Rand = UKismetMathLibrary::RandomInteger(TotalFitnesses);
 		int32 i = UKismetMathLibrary::RandomInteger(TotalPopulation);
 		int32 Fitness = DNAs[i].Fitness;
-		if (SentenceLen < 2 * Fitness) {
+		if (PhraseLen < 2 * Fitness) {
 			if (Rand < 2 * Fitness) {
 				return DNAs[i].Chars;
 			}
@@ -85,11 +83,11 @@ FString APopulation_Shakespeare::CrossOver() {
 	FString ParentA = PickByFitness();
 	FString ParentB = PickByFitness();
 
-	return ParentA.Mid(0, SentenceLen / 2) + ParentB.Mid(SentenceLen / 2);
+	return ParentA.Mid(0, PhraseLen / 2) + ParentB.Mid(PhraseLen / 2);
 }
 
 void APopulation_Shakespeare::Mutate(FString& DNA) {
-	for (int32 i = 0; i < SentenceLen; ++i) {
+	for (int32 i = 0; i < PhraseLen; ++i) {
 		if (UKismetMathLibrary::RandomFloat() <= MutationRate) {
 			DNA[i] = DNAPool[(UKismetMathLibrary::RandomInteger(DNAPool.Len()))];
 		}
@@ -105,26 +103,56 @@ void APopulation_Shakespeare::CreateNewGeneration() {
 		DNAs[i].Fitness = NewFitness;
 
 		TotalFitnesses += NewFitness - OldFitness;
-
-		UE_LOG(LogTemp, Error, TEXT("%s"), *DNAs[i].Chars);
 	}
 
-	RecordedTotalFitnesses = static_cast<float>(TotalFitnesses) / (TotalPopulation * SentenceLen);
+	if (OnGenerationChanged.IsBound()) {
+		OnGenerationChanged.Execute();
+	}
+
 	++TotalGeneration;
 
 	if (!IsOptimal()) {
 		GetWorldTimerManager().SetTimerForNextTick(FTimerDelegate::CreateUObject(this, &APopulation_Shakespeare::CreateNewGeneration));
 	}
 	else {
+		if (OnTargetFound.IsBound()) {
+			OnTargetFound.Execute();
+		}
 		UE_LOG(LogTemp, Error, TEXT("FINISH!!!!!!!!!!!!!!!!"));
 	}
 }
 
 bool APopulation_Shakespeare::IsOptimal() {
 	for (const auto& DNA : DNAs) {
-		if (DNA.Chars == OptimalSentence) {
+		if (DNA.Chars == TargetPhrase) {
 			return true;
 		}
 	}
 	return false;
+}
+
+void APopulation_Shakespeare::Start() {
+	/* Initialize Info */
+	TotalGeneration = 0;
+	TotalFitnesses = 0;
+
+	DNAs.AddDefaulted(TotalPopulation);
+	RandomizeDNAs();
+	CreateNewGeneration();
+}
+
+void APopulation_Shakespeare::End() {
+	/* Clear Info */
+	TotalGeneration = 0;
+	TotalFitnesses = 0;
+
+	GetWorldTimerManager().ClearAllTimersForObject(this);
+}
+
+void APopulation_Shakespeare::SetTargetPhrase(const FString& NewTargetPhrase) {
+	TargetPhrase = NewTargetPhrase;
+}
+
+void APopulation_Shakespeare::SetPhraseLen(int32 NewPhraseLen) {
+	PhraseLen = NewPhraseLen;
 }

@@ -12,20 +12,35 @@ public:
 	void InitWidget(class APopulation_Shakespeare* NewPopulation);
 
 private:
-	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UFUNCTION(BlueprintPure)
 	FText SetDNAPool();
 
-	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UFUNCTION(BlueprintPure)
 	FText SetTotalPopulation();
-	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UFUNCTION(BlueprintPure)
 	FText SetTotalGeneration();
-	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UFUNCTION(BlueprintPure)
 	FText SetTotalFitnesses();
-	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UFUNCTION(BlueprintPure)
 	FText SetMutationRate();
 
 	UFUNCTION()
 	void ChangeGeneration();
+
+	UFUNCTION()
+	void Start();
+	UFUNCTION()
+	void End();
+
+	UFUNCTION()
+	void TargetChanged();
+	UFUNCTION()
+	void TargetCommitted();
+
+	UFUNCTION()
+	void TargetFound();
+
+	void ActivateUIs(bool bActivate);
 
 private:
 	UPROPERTY()
@@ -46,5 +61,13 @@ private:
 	class UTextBlock* MutationRate;
 
 	UPROPERTY(Meta = (BindWidget))
+	class UButton* StartButton;
+	UPROPERTY(Meta = (BindWidget))
+	class UButton* EndButton;
+
+	UPROPERTY(Meta = (BindWidget))
 	class UScrollBox* PopulationList;
+
+	bool bOnDoing;
+	bool bTargetChanged;
 };

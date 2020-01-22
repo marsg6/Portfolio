@@ -9,6 +9,7 @@
 //https://www.youtube.com/watch?v=c8gZguZWYik&list=PLRqwX-V7Uu6bw4n02JP28QDuUdNi3EXxJ 
 
 DECLARE_DYNAMIC_DELEGATE(FGenerationChangedDelegate);
+DECLARE_DYNAMIC_DELEGATE(FTargetFoundDelegate);
 
 UCLASS()
 class ALGOVISUALIZATION_API APopulation_Shakespeare : public AActor {
@@ -19,14 +20,26 @@ public:
 
 	FORCEINLINE int32 GetTotalPopulation()		const { return TotalPopulation; }
 	FORCEINLINE int32 GetTotalGeneration()		const { return TotalGeneration; }
-	FORCEINLINE int32 GetTotalFitnesses()		const { return RecordedTotalFitnesses * 100; }
-	FORCEINLINE int32 GetMutationRate()			const { return MutationRate * 100; }
+	FORCEINLINE float GetTotalFitnesses()		const { return static_cast<float>(TotalFitnesses) / (TotalPopulation * PhraseLen) * 100; }
+	FORCEINLINE float GetMutationRate()			const { return MutationRate * 100; }
 
-	FORCEINLINE FString GetOptimalSentence()	const { return OptimalSentence; }
+	FORCEINLINE FString GetTargetPhrase()		const { return TargetPhrase; }
 	FORCEINLINE FString GetDNAPool()			const { return DNAPool; }
+	
+	FORCEINLINE auto GetDNAs()					const { return DNAs; }
+
+	UFUNCTION(BlueprintCallable, Category = "GeneticAlgorithm|Shakespeare|UI")
+	void Start();
+	UFUNCTION(BlueprintCallable, Category = "GeneticAlgorithm|Shakespeare|UI")
+	void End();
+	UFUNCTION(BlueprintCallable, Category = "GeneticAlgorithm|Shakespeare|UI")
+	void SetTargetPhrase(const FString& NewTargetPhrase);
+	UFUNCTION(BlueprintCallable, Category = "GeneticAlgorithm|Shakespeare|UI")
+	void SetPhraseLen(int32 NewPhraseLen);
 
 public:
 	FGenerationChangedDelegate OnGenerationChanged;
+	FTargetFoundDelegate OnTargetFound;
 
 protected:
 	virtual void BeginPlay() override;
@@ -51,13 +64,12 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GeneticAlgorithm|Shakespeare|Population", Meta = (AllowPrivateAccess = true))
 	int32 TotalPopulation;
 	int32 TotalGeneration;
-	float RecordedTotalFitnesses;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GeneticAlgorithm|Shakespeare|Population", Meta = (AllowPrivateAccess = true))
 	float MutationRate;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GeneticAlgorithm|Shakespeare|Population", Meta = (AllowPrivateAccess = true))
-	FString OptimalSentence;
-	int32 SentenceLen;
+	FString TargetPhrase;
+	int32 PhraseLen;
 
 	int32 TotalFitnesses;
 
