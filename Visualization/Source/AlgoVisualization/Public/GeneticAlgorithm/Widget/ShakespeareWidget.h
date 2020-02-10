@@ -7,7 +7,7 @@
 UCLASS()
 class ALGOVISUALIZATION_API UShakespeareWidget : public UUserWidget {
 	GENERATED_BODY()
-	
+
 public:
 	void InitWidget(class APopulation_Shakespeare* NewPopulation);
 

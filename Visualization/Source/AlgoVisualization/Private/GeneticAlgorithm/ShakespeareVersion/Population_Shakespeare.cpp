@@ -15,10 +15,10 @@ APopulation_Shakespeare::APopulation_Shakespeare() {
 	DNAPool = TEXT("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ., ");
 	TargetPhrase = TEXT("To be or not to be.");
 	PhraseLen = TargetPhrase.Len();
-	
+
 	TotalPopulation = 200;
 	TotalGeneration = 0;
-	MutationRate = 0.01f;
+	MutationRate = 0.005f;
 
 	TotalFitnesses = 0;
 
@@ -80,10 +80,7 @@ FString APopulation_Shakespeare::PickByFitness() {
 }
 
 FString APopulation_Shakespeare::CrossOver() {
-	FString ParentA = PickByFitness();
-	FString ParentB = PickByFitness();
-
-	return ParentA.Mid(0, PhraseLen / 2) + ParentB.Mid(PhraseLen / 2);
+	return PickByFitness().Mid(0, PhraseLen / 2) + PickByFitness().Mid(PhraseLen / 2);
 }
 
 void APopulation_Shakespeare::Mutate(FString& DNA) {
@@ -105,9 +102,7 @@ void APopulation_Shakespeare::CreateNewGeneration() {
 		TotalFitnesses += NewFitness - OldFitness;
 	}
 
-	if (OnGenerationChanged.IsBound()) {
-		OnGenerationChanged.Execute();
-	}
+	OnGenerationChanged.ExecuteIfBound();
 
 	++TotalGeneration;
 
@@ -115,10 +110,9 @@ void APopulation_Shakespeare::CreateNewGeneration() {
 		GetWorldTimerManager().SetTimerForNextTick(FTimerDelegate::CreateUObject(this, &APopulation_Shakespeare::CreateNewGeneration));
 	}
 	else {
-		if (OnTargetFound.IsBound()) {
-			OnTargetFound.Execute();
-		}
-		UE_LOG(LogTemp, Error, TEXT("FINISH!!!!!!!!!!!!!!!!"));
+		DNAs.Sort([](auto lDNA, auto rDNA) { return lDNA.Fitness > rDNA.Fitness; });
+		OnGenerationChanged.ExecuteIfBound();
+		OnTargetFound.ExecuteIfBound();
 	}
 }
 

@@ -25,7 +25,7 @@ public:
 
 	FORCEINLINE FString GetTargetPhrase()		const { return TargetPhrase; }
 	FORCEINLINE FString GetDNAPool()			const { return DNAPool; }
-	
+
 	FORCEINLINE auto GetDNAs()					const { return DNAs; }
 
 	UFUNCTION(BlueprintCallable, Category = "GeneticAlgorithm|Shakespeare|UI")
@@ -66,7 +66,7 @@ private:
 	int32 TotalGeneration;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GeneticAlgorithm|Shakespeare|Population", Meta = (AllowPrivateAccess = true))
 	float MutationRate;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GeneticAlgorithm|Shakespeare|Population", Meta = (AllowPrivateAccess = true))
 	FString TargetPhrase;
 	int32 PhraseLen;
@@ -75,5 +75,5 @@ private:
 
 	/* For widet */
 	UPROPERTY()
-	TSubclassOf<class UShakespeareWidget> ShakespeareWidgetClass;
+		TSubclassOf<class UShakespeareWidget> ShakespeareWidgetClass;
 };

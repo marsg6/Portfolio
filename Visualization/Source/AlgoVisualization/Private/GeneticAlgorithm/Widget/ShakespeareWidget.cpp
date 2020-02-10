@@ -16,6 +16,7 @@ void UShakespeareWidget::InitWidget(class APopulation_Shakespeare* NewPopulation
 	FScriptDelegate EndButtonDelegate;
 	EndButtonDelegate.BindUFunction(this, TEXT("End"));
 	EndButton->OnClicked.AddUnique(EndButtonDelegate);
+	EndButton->bIsEnabled = false;
 
 	FScriptDelegate TextChangeDelegate;
 	TextChangeDelegate.BindUFunction(this, TEXT("TargetChanged"));
@@ -44,9 +45,9 @@ void UShakespeareWidget::InitWidget(class APopulation_Shakespeare* NewPopulation
 }
 
 FText UShakespeareWidget::SetDNAPool() {
-	FString Default = TEXT("Only the components of the following list can be typed.");
+	FString Default = TEXT("Only the components of the following list can be typed.\n");
 	if (Population) {
-		return FText::FromString(Default + TEXT(" { ") +  Population->GetDNAPool() + TEXT(" }"));
+		return FText::FromString(Default + TEXT("{ ") + Population->GetDNAPool() + TEXT(" }"));
 	}
 	return FText::FromString(Default);
 }
@@ -128,7 +129,7 @@ void UShakespeareWidget::TargetCommitted() {
 		bTargetChanged = false;
 
 		if (Population) {
-			const auto& NewPhrase = TargetPhrase->GetText().ToString();
+			const auto& NewPhrase = TargetPhrase->Text.ToString();
 			Population->SetTargetPhrase(NewPhrase);
 			Population->SetPhraseLen(NewPhrase.Len());
 		}
@@ -136,6 +137,16 @@ void UShakespeareWidget::TargetCommitted() {
 }
 
 void UShakespeareWidget::TargetFound() {
+	ChangeGeneration();
+
+	auto Sentences = PopulationList->GetAllChildren();
+	for (int i = 0; i < Sentences.Num(); ++i) {
+		auto Sentence = Cast<UTextBlock>(Sentences[i]);
+		if (Sentence && Sentence->Text.EqualTo(TargetPhrase->Text)) {
+			Sentence->SetColorAndOpacity(FSlateColor({ 1.0f, 0.0f, 0.0f }));
+		}
+	}
+
 	bOnDoing = false;
 	ActivateUIs(true);
 }
